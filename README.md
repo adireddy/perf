@@ -9,14 +9,14 @@ Uses `performance.now()` with the fallback to use `Date.now()` on older browsers
 
 ####Basic Stats:
 
-<img url="https://raw.githubusercontent.com/adireddy/perf/master/assets/basic.png" width="50" height="50/>
+<img alt="basic" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/basic.png" width="84" height="28"/>
 
 ####With Memory (Chrome only):
 
-![basic](https://raw.githubusercontent.com/adireddy/perf/master/assets/memory.png)
+<img alt="memory" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/memory.png" width="84" height="42"/>
 
 ####With Custom Info (Optional):
 
 Optional custom info can be added if needed, For exmple the following shows what kind of renderer and pixel ration pixi.js is using. 
 
-![basic](https://raw.githubusercontent.com/adireddy/perf/master/assets/info.png)
+<img alt="info" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/info.png" width="84" height="56"/>
