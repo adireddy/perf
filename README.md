@@ -80,3 +80,5 @@ By default stats appear on the top right corner. The position can be changed by 
 <img alt="MIT license" height="40" src="http://upload.wikimedia.org/wikipedia/commons/c/c3/License_icon-mit.svg" /></a>
 
 This content is released under the [MIT](http://opensource.org/licenses/MIT) License.
+
+Made with <img alt="basic" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/haxe.png" />
