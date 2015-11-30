@@ -1,0 +1,22 @@
+{
+	"name": "perf.js",
+	"license": "MIT",
+	"tags": [
+		"js",
+		"fps",
+		"memory",
+		"stats",
+		"perf.js",
+		"perf",
+		"haxe",
+		"library"
+	],
+	"description": "Simple FPS and Memory monitor.",
+	"contributors": [
+		"adireddy"
+	],
+	"releasenote": "minor fixes",
+	"version": "1.0.5",
+	"url": "https://github.com/adireddy/perf",
+	"dependencies": {}
+}

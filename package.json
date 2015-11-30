@@ -1,0 +1,41 @@
+{
+  "name": "perf.js",
+  "version": "1.0.5",
+  "description": "Simple FPS and Memory monitor.",
+  "author": "Adi Reddy Mora",
+  "homepage": "http://adireddy.github.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adireddy/perf"
+  },
+  "bugs": {
+    "url": "https://github.com/adireddy/perf/issues"
+  },
+  "keywords": [
+    "js",
+    "fps",
+    "memory",
+    "stats",
+    "perf.js",
+    "perf",
+    "haxe",
+    "library"
+  ],
+  "dependencies": {
+    "grunt": "latest",
+    "grunt-cli": "latest",
+    "grunt-contrib-uglify": "latest"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-contrib-copy": "^0.7.0",
+    "grunt-exec": "^0.4.6",
+    "grunt-haxe": "^0.1.12",
+    "grunt-shell": "^1.1.1",
+    "grunt-zip": "^0.16.0"
+  },
+  "main": "dist/perf.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}

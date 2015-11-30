@@ -1,0 +1,22 @@
+-cp src
+Perf
+-js dist/perf.js
+-dce std
+-debug
+-D source-map-content
+
+--next
+-cp src
+Perf
+-js dist/perf.min.js
+-dce std
+--no-traces
+
+--next
+-cmd haxelib newrepo
+
+-cp sample
+-cp src
+-main Main
+-lib pixijs
+-js sample/sample.js
