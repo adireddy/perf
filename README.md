@@ -1,2 +1,2 @@
-# perf
-Simple FPS and Memory stats
+# perf.js
+Simple FPS and Memory monitor.
