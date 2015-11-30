@@ -7,7 +7,7 @@ Uses `performance.now()` with `Date.now()` fallback on older browsers.
 
 `var stats = new Perf();`
 
-### Installation:
+#### Installation:
 
 `npm install perf.js`
 
@@ -15,15 +15,15 @@ For haxe users:
 
 `haxelib install perf.js`
 
-### Basic Stats:
+#### Basic Stats:
 
 <img alt="basic" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/basic.png" width="84" height="28"/>
 
-### With Memory (Chrome only):
+#### With Memory (Chrome only):
 
 <img alt="memory" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/memory.png" width="84" height="42"/>
 
-### With Custom Info (Optional):
+#### With Custom Info (Optional):
 
 Optional custom info can be added if needed, For example the following shows what kind of renderer and pixel ratio pixi.js is using. 
 
@@ -33,7 +33,7 @@ To use, simply call `addInfo(info)` on perf instance.
 
 `stats.addInfo("custom info");`
 
-### Customisation:
+#### Customisation:
 
 You can customize the following:
 
@@ -54,7 +54,7 @@ Perf.INFO_TXT_CLR = "#000000";
 
 The values assigned above are the default values.
 
-### Positioning:
+#### Positioning:
 
 By default stats appear on the top right corner. The position can be changed by passing the position to the constructor when instantiating `Perf`.
 
@@ -74,7 +74,7 @@ By default stats appear on the top right corner. The position can be changed by 
 
 `var stats = new Perf(Perf.BOTTOM_LEFT);`
 
-### Licensing Information
+#### Licensing Information
 
 <a rel="license" href="http://opensource.org/licenses/MIT">
 <img alt="MIT license" height="40" src="http://upload.wikimedia.org/wikipedia/commons/c/c3/License_icon-mit.svg" /></a>
