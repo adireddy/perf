@@ -4,10 +4,16 @@ import js.Browser;
 
 @:expose class Perf {
 
+	public static var MEASUREMENT_INTERVAL:Int = 1000;
+
 	public static var FONT_FAMILY:String = "Helvetica,Arial";
+
 	public static var FPS_BG_CLR:String = "#00FF00";
+	public static var FPS_WARN_BG_CLR:String = "#FF8000";
+	public static var FPS_PROB_BG_CLR:String = "#FF0000";
+
 	public static var MS_BG_CLR:String = "#FFFF00";
-	public static var MEM_BG_CLR:String = "#FF0000";
+	public static var MEM_BG_CLR:String = "#086A87";
 	public static var INFO_BG_CLR:String = "#00FFFF";
 	public static var FPS_TXT_CLR:String = "#000000";
 	public static var MS_TXT_CLR:String = "#000000";
@@ -48,7 +54,8 @@ import js.Browser;
 		_fps = 0;
 		_fpsMin = Math.POSITIVE_INFINITY;
 		_fpsMax = 0;
-		_startTime = _prevTime = _now();
+		_startTime = _now();
+		_prevTime = -MEASUREMENT_INTERVAL;
 
 		_createFpsDom();
 		_createMsDom();
@@ -64,7 +71,7 @@ import js.Browser;
 		var time = _now();
 		_ticks++;
 
-		if (time > _prevTime + 1000) {
+		if (time > _prevTime + MEASUREMENT_INTERVAL) {
 			ms.innerHTML = "MS: " + Math.round(time - _startTime);
 
 			_fps = Math.round((_ticks * 1000) / (time - _prevTime));
@@ -72,6 +79,10 @@ import js.Browser;
 			_fpsMax = Math.max(_fpsMax, _fps);
 
 			fps.innerHTML =  "FPS: " + _fps + " (" + _fpsMin + "-" + _fpsMax + ")";
+
+			if (_fps >= 30) fps.style.backgroundColor = FPS_BG_CLR;
+			else if (_fps >= 15) fps.style.backgroundColor = FPS_WARN_BG_CLR;
+			else fps.style.backgroundColor = FPS_PROB_BG_CLR;
 
 			_prevTime = time;
 			_ticks = 0;

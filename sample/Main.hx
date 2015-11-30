@@ -25,7 +25,7 @@ class Main extends Application {
 	var amount:Int = 100;
 	var counter:DivElement;
 
-	var perf:Perf;
+	var stats:Perf;
 
 	public function new() {
 		super();
@@ -33,12 +33,13 @@ class Main extends Application {
 	}
 
 	function _init() {
-		perf = new Perf();
+		//stats = new Perf();
 
 		backgroundColor = 0xE0E6F8;
 		onUpdate = _onUpdate;
 		onResize = _onResize;
 		super.start();
+		//stats.addInfo(["UNKNOWN", "WEBGL", "CANVAS"][renderer.type] + " - " + pixelRatio);
 		_setup();
 	}
 

@@ -147,7 +147,6 @@ Main.main = function() {
 Main.__super__ = pixi_plugins_app_Application;
 Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 	_init: function() {
-		this.perf = new Perf();
 		this.backgroundColor = 14739192;
 		this.onUpdate = $bind(this,this._onUpdate);
 		this.onResize = $bind(this,this._onResize);
@@ -265,7 +264,8 @@ var Perf = $hx_exports.Perf = function(pos) {
 	this._fps = 0;
 	this._fpsMin = Infinity;
 	this._fpsMax = 0;
-	this._startTime = this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null?this._prevTime = this._perfObj.now():this._prevTime = new Date().getTime();
+	if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) this._startTime = this._perfObj.now(); else this._startTime = new Date().getTime();
+	this._prevTime = -Perf.MEASUREMENT_INTERVAL;
 	this._createFpsDom();
 	this._createMsDom();
 	if(this._memCheck) this._createMemoryDom();
@@ -279,12 +279,13 @@ Perf.prototype = {
 		var time;
 		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) time = this._perfObj.now(); else time = new Date().getTime();
 		this._ticks++;
-		if(time > this._prevTime + 1000) {
+		if(time > this._prevTime + Perf.MEASUREMENT_INTERVAL) {
 			this.ms.innerHTML = "MS: " + Math.round(time - this._startTime);
 			this._fps = Math.round(this._ticks * 1000 / (time - this._prevTime));
 			this._fpsMin = Math.min(this._fpsMin,this._fps);
 			this._fpsMax = Math.max(this._fpsMax,this._fps);
 			this.fps.innerHTML = "FPS: " + this._fps + " (" + this._fpsMin + "-" + this._fpsMax + ")";
+			if(this._fps >= 30) this.fps.style.backgroundColor = Perf.FPS_BG_CLR; else if(this._fps >= 15) this.fps.style.backgroundColor = Perf.FPS_WARN_BG_CLR; else this.fps.style.backgroundColor = Perf.FPS_PROB_BG_CLR;
 			this._prevTime = time;
 			this._ticks = 0;
 			if(this._memCheck) this.memory.innerHTML = "MEM: " + this._getFormattedSize(this._memoryObj.usedJSHeapSize,2);
@@ -381,10 +382,13 @@ pixi_plugins_app_Application.AUTO = "auto";
 pixi_plugins_app_Application.RECOMMENDED = "recommended";
 pixi_plugins_app_Application.CANVAS = "canvas";
 pixi_plugins_app_Application.WEBGL = "webgl";
+Perf.MEASUREMENT_INTERVAL = 1000;
 Perf.FONT_FAMILY = "Helvetica,Arial";
 Perf.FPS_BG_CLR = "#00FF00";
+Perf.FPS_WARN_BG_CLR = "#FF8000";
+Perf.FPS_PROB_BG_CLR = "#FF0000";
 Perf.MS_BG_CLR = "#FFFF00";
-Perf.MEM_BG_CLR = "#FF0000";
+Perf.MEM_BG_CLR = "#086A87";
 Perf.INFO_BG_CLR = "#00FFFF";
 Perf.FPS_TXT_CLR = "#000000";
 Perf.MS_TXT_CLR = "#000000";
