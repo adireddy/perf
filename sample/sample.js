@@ -267,9 +267,9 @@ var Perf = $hx_exports.Perf = function(pos) {
 	this._fpsMax = 0;
 	this._startTime = this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null?this._prevTime = this._perfObj.now():this._prevTime = new Date().getTime();
 	this._createFpsDom();
+	this._createMsDom();
 	if(this._memCheck) this._createMemoryDom();
 	window.requestAnimationFrame($bind(this,this._tick));
-	this.addInfo("Canvas - 2");
 };
 Perf.prototype = {
 	_now: function() {
@@ -280,6 +280,7 @@ Perf.prototype = {
 		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) time = this._perfObj.now(); else time = new Date().getTime();
 		this._ticks++;
 		if(time > this._prevTime + 1000) {
+			this.ms.innerHTML = "MS: " + Math.round(time - this._startTime);
 			this._fps = Math.round(this._ticks * 1000 / (time - this._prevTime));
 			this._fpsMin = Math.min(this._fpsMin,this._fps);
 			this._fpsMax = Math.max(this._fpsMax,this._fps);
@@ -334,11 +335,18 @@ Perf.prototype = {
 		this.fps.style.color = Perf.FPS_TXT_CLR;
 		this.fps.innerHTML = "FPS: 0";
 	}
+	,_createMsDom: function() {
+		this.ms = this._createDiv("ms",14);
+		this.ms.style.backgroundColor = Perf.MS_BG_CLR;
+		this.ms.style.zIndex = "996";
+		this.ms.style.color = Perf.MS_TXT_CLR;
+		this.ms.innerHTML = "MS: 0";
+	}
 	,_createMemoryDom: function() {
-		this.memory = this._createDiv("memory",14);
+		this.memory = this._createDiv("memory",28);
 		this.memory.style.backgroundColor = Perf.MEM_BG_CLR;
 		this.memory.style.color = Perf.MEM_TXT_CLR;
-		this.memory.style.zIndex = "996";
+		this.memory.style.zIndex = "997";
 		this.memory.innerHTML = "MEM: 0";
 	}
 	,_getFormattedSize: function(bytes,frac) {
@@ -350,10 +358,10 @@ Perf.prototype = {
 		return Math.round(bytes * precision / Math.pow(1024,i)) / precision + " " + sizes[i];
 	}
 	,addInfo: function(val) {
-		this.info = this._createDiv("info",this._memCheck?28:14);
+		this.info = this._createDiv("info",this._memCheck?42:28);
 		this.info.style.backgroundColor = Perf.INFO_BG_CLR;
 		this.info.style.color = Perf.INFO_TXT_CLR;
-		this.info.style.zIndex = "997";
+		this.info.style.zIndex = "998";
 		this.info.innerHTML = val;
 	}
 	,clearInfo: function() {
@@ -375,9 +383,11 @@ pixi_plugins_app_Application.CANVAS = "canvas";
 pixi_plugins_app_Application.WEBGL = "webgl";
 Perf.FONT_FAMILY = "Helvetica,Arial";
 Perf.FPS_BG_CLR = "#00FF00";
-Perf.MEM_BG_CLR = "#FF00FF";
+Perf.MS_BG_CLR = "#FFFF00";
+Perf.MEM_BG_CLR = "#FF0000";
 Perf.INFO_BG_CLR = "#00FFFF";
 Perf.FPS_TXT_CLR = "#000000";
+Perf.MS_TXT_CLR = "#000000";
 Perf.MEM_TXT_CLR = "#FFFFFF";
 Perf.INFO_TXT_CLR = "#000000";
 Perf.TOP_LEFT = "TL";

@@ -6,9 +6,11 @@ import js.Browser;
 
 	public static var FONT_FAMILY:String = "Helvetica,Arial";
 	public static var FPS_BG_CLR:String = "#00FF00";
-	public static var MEM_BG_CLR:String = "#FF00FF";
+	public static var MS_BG_CLR:String = "#FFFF00";
+	public static var MEM_BG_CLR:String = "#FF0000";
 	public static var INFO_BG_CLR:String = "#00FFFF";
 	public static var FPS_TXT_CLR:String = "#000000";
+	public static var MS_TXT_CLR:String = "#000000";
 	public static var MEM_TXT_CLR:String = "#FFFFFF";
 	public static var INFO_TXT_CLR:String = "#000000";
 
@@ -18,6 +20,7 @@ import js.Browser;
 	public static var BOTTOM_RIGHT:String = "BR";
 
 	public var fps:DivElement;
+	public var ms:DivElement;
 	public var memory:DivElement;
 	public var info:DivElement;
 
@@ -48,10 +51,9 @@ import js.Browser;
 		_startTime = _prevTime = _now();
 
 		_createFpsDom();
+		_createMsDom();
 		if (_memCheck) _createMemoryDom();
 		Browser.window.requestAnimationFrame(cast _tick);
-
-		addInfo("Canvas - 2");
 	}
 
 	inline function _now():Float {
@@ -63,6 +65,8 @@ import js.Browser;
 		_ticks++;
 
 		if (time > _prevTime + 1000) {
+			ms.innerHTML = "MS: " + Math.round(time - _startTime);
+
 			_fps = Math.round((_ticks * 1000) / (time - _prevTime));
 			_fpsMin = Math.min(_fpsMin, _fps);
 			_fpsMax = Math.max(_fpsMax, _fps);
@@ -118,11 +122,19 @@ import js.Browser;
 		fps.innerHTML = "FPS: 0";
 	}
 
+	function _createMsDom() {
+		ms = _createDiv("ms", 14);
+		ms.style.backgroundColor = MS_BG_CLR;
+		ms.style.zIndex = "996";
+		ms.style.color = MS_TXT_CLR;
+		ms.innerHTML = "MS: 0";
+	}
+
 	function _createMemoryDom() {
-		memory = _createDiv("memory", 14);
+		memory = _createDiv("memory", 28);
 		memory.style.backgroundColor = MEM_BG_CLR;
 		memory.style.color = MEM_TXT_CLR;
-		memory.style.zIndex = "996";
+		memory.style.zIndex = "997";
 		memory.innerHTML = "MEM: 0";
 	}
 
@@ -135,10 +147,10 @@ import js.Browser;
 	}
 
 	public function addInfo(val:String) {
-		info = _createDiv("info", (_memCheck) ? 28 : 14);
+		info = _createDiv("info", (_memCheck) ? 42 : 28);
 		info.style.backgroundColor = INFO_BG_CLR;
 		info.style.color = INFO_TXT_CLR;
-		info.style.zIndex = "997";
+		info.style.zIndex = "998";
 		info.innerHTML = val;
 	}
 
