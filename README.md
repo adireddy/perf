@@ -7,6 +7,14 @@ Uses `performance.now()` with the fallback to use `Date.now()` on older browsers
 
 `var stats = new Perf();`
 
+####Installation:
+
+`npm install perf.js`
+
+For haxe users:
+
+`haxelib install perf`
+
 ####Basic Stats:
 
 <img alt="basic" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/basic.png" width="84" height="28"/>
