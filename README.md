@@ -9,7 +9,7 @@ Uses `performance.now()` with the fallback to use `Date.now()` on older browsers
 
 ####Basic Stats:
 
-![basic](https://raw.githubusercontent.com/adireddy/perf/master/assets/basic.png)
+<img url="https://raw.githubusercontent.com/adireddy/perf/master/assets/basic.png" width="50" height="50/>
 
 ####With Memory (Chrome only):
 
