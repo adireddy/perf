@@ -1,9 +1,9 @@
 # perf.js
-Simple JavaScript library to monitor frame rate (FPS), frame time (MS) and memory (MEM).
+Simple JavaScript library to monitor frame rate (**FPS**), frame time (**MS**) and memory (**MEM**).
 
 Uses `performance.now()` with the fallback to use `Date.now()` on older browsers.
 
-**perf.js** is a self contained library, so by just instantiating it will start monitoring stats.
+**perf.js** is a self contained library, so monitoring of stats will start by just instantiating it.
 
 `var stats = new Perf();`
 
@@ -13,7 +13,7 @@ Uses `performance.now()` with the fallback to use `Date.now()` on older browsers
 
 For haxe users:
 
-`haxelib install perf`
+`haxelib install perf.js`
 
 ####Basic Stats:
 
@@ -25,13 +25,13 @@ For haxe users:
 
 ####With Custom Info (Optional):
 
-Optional custom info can be added if needed, For exmple the following shows what kind of renderer and pixel ratio pixi.js is using. 
+Optional custom info can be added if needed, For example the following shows what kind of renderer and pixel ratio pixi.js is using. 
 
 <img alt="info" src="https://raw.githubusercontent.com/adireddy/perf/master/assets/info.png" width="84" height="56"/>
 
 To use, simply call `addInfo(info)` on perf instance.
 
-`stats.addInfo("custon info");`
+`stats.addInfo("custom info");`
 
 ####Customisation:
 
