@@ -147,10 +147,12 @@ Main.main = function() {
 Main.__super__ = pixi_plugins_app_Application;
 Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 	_init: function() {
+		this.stats = new Perf(Perf.TOP_RIGHT);
 		this.backgroundColor = 14739192;
 		this.onUpdate = $bind(this,this._onUpdate);
 		this.onResize = $bind(this,this._onResize);
 		pixi_plugins_app_Application.prototype.start.call(this);
+		this.stats.addInfo(["UNKNOWN","WEBGL","CANVAS"][this.renderer.type] + " - " + this.pixelRatio);
 		this._setup();
 	}
 	,_setup: function() {
@@ -253,7 +255,8 @@ Main.prototype = $extend(pixi_plugins_app_Application.prototype,{
 		this.counter.style.left = "1px";
 	}
 });
-var Perf = $hx_exports.Perf = function(pos) {
+var Perf = $hx_exports.Perf = function(pos,offset) {
+	if(offset == null) offset = 0;
 	if(pos == null) pos = "TR";
 	this._perfObj = window.performance;
 	this._memoryObj = window.performance.memory;
@@ -262,6 +265,7 @@ var Perf = $hx_exports.Perf = function(pos) {
 	this.currentMs = 0;
 	this.currentMem = "0";
 	this._pos = pos;
+	this._offset = offset;
 	this._time = 0;
 	this._ticks = 0;
 	this._fpsMin = Infinity;
@@ -310,25 +314,25 @@ Perf.prototype = {
 		var _g = this._pos;
 		switch(_g) {
 		case "TL":
-			div.style.left = "0px";
+			div.style.left = this._offset + "px";
 			div.style.top = top + "px";
 			break;
 		case "TR":
-			div.style.right = "0px";
+			div.style.right = this._offset + "px";
 			div.style.top = top + "px";
 			break;
 		case "BL":
-			div.style.left = "0px";
-			div.style.bottom = 32 - top + "px";
+			div.style.left = this._offset + "px";
+			div.style.bottom = (this._memCheck?48:32) - top + "px";
 			break;
 		case "BR":
-			div.style.right = "0px";
-			div.style.bottom = 32 - top + "px";
+			div.style.right = this._offset + "px";
+			div.style.bottom = (this._memCheck?48:32) - top + "px";
 			break;
 		}
 		div.style.width = "80px";
-		div.style.height = "14px";
-		div.style.lineHeight = "14px";
+		div.style.height = "12px";
+		div.style.lineHeight = "12px";
 		div.style.padding = "2px";
 		div.style.fontFamily = Perf.FONT_FAMILY;
 		div.style.fontSize = "9px";

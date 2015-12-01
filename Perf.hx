@@ -42,11 +42,12 @@ import js.Browser;
 	var _fpsMax:Float;
 	var _memCheck:Bool;
 	var _pos:String;
+	var _offset:Float;
 
 	var _perfObj:Performance;
 	var _memoryObj:Memory;
 
-	public function new(?pos = "TR") {
+	public function new(?pos = "TR", ?offset:Float = 0) {
 		_perfObj = Browser.window.performance;
 		_memoryObj = untyped __js__("window.performance").memory;
 		_memCheck = (_perfObj != null && _memoryObj != null && _memoryObj.totalJSHeapSize > 0);
@@ -56,6 +57,7 @@ import js.Browser;
 		currentMem = "0";
 
 		_pos = pos;
+		_offset = offset;
 		_time = 0;
 		_ticks = 0;
 		_fpsMin = Math.POSITIVE_INFINITY;
@@ -112,22 +114,22 @@ import js.Browser;
 
 		switch (_pos) {
 			case "TL":
-				div.style.left = "0px";
+				div.style.left = _offset + "px";
 				div.style.top = top + "px";
 			case "TR":
-				div.style.right = "0px";
+				div.style.right = _offset + "px";
 				div.style.top = top + "px";
 			case "BL":
-				div.style.left = "0px";
-				div.style.bottom = 32 - top + "px";
+				div.style.left = _offset + "px";
+				div.style.bottom = ((_memCheck) ? 48 : 32) - top + "px";
 			case "BR":
-				div.style.right = "0px";
-				div.style.bottom = 32 - top + "px";
+				div.style.right = _offset + "px";
+				div.style.bottom = ((_memCheck) ? 48 : 32) - top + "px";
 		}
 
 		div.style.width = "80px";
-		div.style.height = "14px";
-		div.style.lineHeight = "14px";
+		div.style.height = "12px";
+		div.style.lineHeight = "12px";
 		div.style.padding = "2px";
 		div.style.fontFamily = FONT_FAMILY;
 		div.style.fontSize = "9px";

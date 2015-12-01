@@ -16,7 +16,7 @@
 		"adireddy"
 	],
 	"releasenote": "style bug fixes",
-	"version": "1.0.6",
+	"version": "1.0.9",
 	"url": "https://github.com/adireddy/perf",
 	"dependencies": {}
 }

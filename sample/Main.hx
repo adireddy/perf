@@ -33,13 +33,13 @@ class Main extends Application {
 	}
 
 	function _init() {
-		//stats = new Perf();
+		stats = new Perf(Perf.TOP_RIGHT);
 
 		backgroundColor = 0xE0E6F8;
 		onUpdate = _onUpdate;
 		onResize = _onResize;
 		super.start();
-		//stats.addInfo(["UNKNOWN", "WEBGL", "CANVAS"][renderer.type] + " - " + pixelRatio);
+		stats.addInfo(["UNKNOWN", "WEBGL", "CANVAS"][renderer.type] + " - " + pixelRatio);
 		_setup();
 	}
 
