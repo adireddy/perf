@@ -74,6 +74,12 @@ By default stats appear on the top right corner. The position can be changed by 
 
 `var stats = new Perf(Perf.BOTTOM_LEFT);`
 
+#### Bookmarklet:
+
+```js
+javascript:(function(){var script=document.createElement('script');script.src='//cdn.rawgit.com/adireddy/perf/master/dist/perf.min.js';script.onload=function(){new Perf();};document.head.appendChild(script);})();
+```
+
 #### Licensing Information
 
 <a rel="license" href="http://opensource.org/licenses/MIT">
