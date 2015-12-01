@@ -319,11 +319,11 @@ Perf.prototype = {
 			break;
 		case "BL":
 			div.style.left = "0px";
-			div.style.bottom = 30 - top + "px";
+			div.style.bottom = 32 - top + "px";
 			break;
 		case "BR":
 			div.style.right = "0px";
-			div.style.bottom = 30 - top + "px";
+			div.style.bottom = 32 - top + "px";
 			break;
 		}
 		div.style.width = "80px";

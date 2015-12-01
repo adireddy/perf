@@ -119,10 +119,10 @@ import js.Browser;
 				div.style.top = top + "px";
 			case "BL":
 				div.style.left = "0px";
-				div.style.bottom = 30 - top + "px";
+				div.style.bottom = 32 - top + "px";
 			case "BR":
 				div.style.right = "0px";
-				div.style.bottom = 30 - top + "px";
+				div.style.bottom = 32 - top + "px";
 		}
 
 		div.style.width = "80px";
