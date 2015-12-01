@@ -77,7 +77,7 @@ By default stats appear on the top right corner. The position can be changed by 
 #### Bookmarklet:
 
 ```js
-javascript:(function(){var script=document.createElement('script');script.onload=function(){var stats=new Perf();};script.src='//cdn.rawgit.com/adireddy/perf/7d0db02f750dba86984524bf06dbe6ce9fc1c65d/dist/perf.min.js';document.head.appendChild(script);})()
+javascript:(function(){var script=document.createElement('script');script.onload=function(){var p=new Perf();};script.src='//cdn.rawgit.com/adireddy/perf/7d0db02f750dba86984524bf06dbe6ce9fc1c65d/dist/perf.min.js';document.head.appendChild(script);})()
 ```
 
 #### Licensing Information
