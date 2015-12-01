@@ -15,8 +15,8 @@
 	"contributors": [
 		"adireddy"
 	],
-	"releasenote": "minor fixes",
-	"version": "1.0.5",
+	"releasenote": "style bug fixes",
+	"version": "1.0.6",
 	"url": "https://github.com/adireddy/perf",
 	"dependencies": {}
 }

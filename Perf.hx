@@ -30,11 +30,14 @@ import js.Browser;
 	public var memory:DivElement;
 	public var info:DivElement;
 
+	public var currentFps:Float;
+	public var currentMs:Float;
+	public var currentMem:String;
+
 	var _time:Float;
 	var _startTime:Float;
 	var _prevTime:Float;
 	var _ticks:Int;
-	var _fps:Float;
 	var _fpsMin:Float;
 	var _fpsMax:Float;
 	var _memCheck:Bool;
@@ -48,10 +51,13 @@ import js.Browser;
 		_memoryObj = untyped __js__("window.performance").memory;
 		_memCheck = (_perfObj != null && _memoryObj != null && _memoryObj.totalJSHeapSize > 0);
 
+		currentFps = 0;
+		currentMs = 0;
+		currentMem = "0";
+
 		_pos = pos;
 		_time = 0;
 		_ticks = 0;
-		_fps = 0;
 		_fpsMin = Math.POSITIVE_INFINITY;
 		_fpsMax = 0;
 		_startTime = _now();
@@ -72,22 +78,26 @@ import js.Browser;
 		_ticks++;
 
 		if (time > _prevTime + MEASUREMENT_INTERVAL) {
-			ms.innerHTML = "MS: " + Math.round(time - _startTime);
+			currentMs = Math.round(time - _startTime);
+			ms.innerHTML = "MS: " + currentMs;
 
-			_fps = Math.round((_ticks * 1000) / (time - _prevTime));
-			_fpsMin = Math.min(_fpsMin, _fps);
-			_fpsMax = Math.max(_fpsMax, _fps);
+			currentFps = Math.round((_ticks * 1000) / (time - _prevTime));
+			_fpsMin = Math.min(_fpsMin, currentFps);
+			_fpsMax = Math.max(_fpsMax, currentFps);
 
-			fps.innerHTML =  "FPS: " + _fps + " (" + _fpsMin + "-" + _fpsMax + ")";
+			fps.innerHTML =  "FPS: " + currentFps + " (" + _fpsMin + "-" + _fpsMax + ")";
 
-			if (_fps >= 30) fps.style.backgroundColor = FPS_BG_CLR;
-			else if (_fps >= 15) fps.style.backgroundColor = FPS_WARN_BG_CLR;
+			if (currentFps >= 30) fps.style.backgroundColor = FPS_BG_CLR;
+			else if (currentFps >= 15) fps.style.backgroundColor = FPS_WARN_BG_CLR;
 			else fps.style.backgroundColor = FPS_PROB_BG_CLR;
 
 			_prevTime = time;
 			_ticks = 0;
 
-			if (_memCheck) memory.innerHTML = "MEM: " + _getFormattedSize(_memoryObj.usedJSHeapSize, 2);
+			if (_memCheck) {
+				currentMem = _getFormattedSize(_memoryObj.usedJSHeapSize, 2);
+				memory.innerHTML = "MEM: " + currentMem;
+			}
 		}
 		_startTime =  time;
 
@@ -109,15 +119,17 @@ import js.Browser;
 				div.style.top = top + "px";
 			case "BL":
 				div.style.left = "0px";
-				div.style.bottom = 28 - top + "px";
+				div.style.bottom = 30 - top + "px";
 			case "BR":
 				div.style.right = "0px";
-				div.style.bottom = 28 - top + "px";
+				div.style.bottom = 30 - top + "px";
 		}
 
 		div.style.width = "80px";
-		div.style.fontFamily = FONT_FAMILY;
+		div.style.height = "14px";
+		div.style.lineHeight = "14px";
 		div.style.padding = "2px";
+		div.style.fontFamily = FONT_FAMILY;
 		div.style.fontSize = "9px";
 		div.style.fontWeight = "bold";
 		div.style.textAlign = "center";
@@ -134,7 +146,7 @@ import js.Browser;
 	}
 
 	function _createMsDom() {
-		ms = _createDiv("ms", 14);
+		ms = _createDiv("ms", 16);
 		ms.style.backgroundColor = MS_BG_CLR;
 		ms.style.zIndex = "996";
 		ms.style.color = MS_TXT_CLR;
@@ -142,7 +154,7 @@ import js.Browser;
 	}
 
 	function _createMemoryDom() {
-		memory = _createDiv("memory", 28);
+		memory = _createDiv("memory", 32);
 		memory.style.backgroundColor = MEM_BG_CLR;
 		memory.style.color = MEM_TXT_CLR;
 		memory.style.zIndex = "997";
@@ -158,7 +170,7 @@ import js.Browser;
 	}
 
 	public function addInfo(val:String) {
-		info = _createDiv("info", (_memCheck) ? 42 : 28);
+		info = _createDiv("info", (_memCheck) ? 48 : 32);
 		info.style.backgroundColor = INFO_BG_CLR;
 		info.style.color = INFO_TXT_CLR;
 		info.style.zIndex = "998";
