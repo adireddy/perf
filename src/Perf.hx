@@ -48,7 +48,7 @@ import js.Browser;
 	var _memoryObj:Memory;
 
 	public function new(?pos = "TR", ?offset:Float = 0) {
-		_perfObj = Browser.window.performance;
+		_perfObj = Browser.window.web;
 		_memoryObj = untyped __js__("window.performance").memory;
 		_memCheck = (_perfObj != null && _memoryObj != null && _memoryObj.totalJSHeapSize > 0);
 

@@ -1,6 +1,7 @@
 {
 	"name": "perf.js",
 	"license": "MIT",
+	"classPath": "src",
 	"tags": [
 		"js",
 		"fps",
