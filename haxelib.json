@@ -16,8 +16,8 @@
 	"contributors": [
 		"adireddy"
 	],
-	"releasenote": "style bug fixes",
-	"version": "1.0.9",
+	"releasenote": "added offset parameter",
+	"version": "1.1.0",
 	"url": "https://github.com/adireddy/perf",
 	"dependencies": {}
 }
