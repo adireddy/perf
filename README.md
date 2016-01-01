@@ -74,6 +74,13 @@ By default stats appear on the top right corner. The position can be changed by 
 
 `var stats = new Perf(Perf.BOTTOM_LEFT);`
 
+**Offset**
+
+Offset is optional and is 0 by default.
+
+`var stats = new Perf(Perf.TOP_LEFT, 100);`
+
+
 #### Bookmarklet:
 
 ```js
