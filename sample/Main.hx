@@ -1,8 +1,8 @@
 import pixi.core.display.Container;
-import js.html.DivElement;
-import js.Browser;
 import pixi.core.textures.Texture;
 import pixi.plugins.app.Application;
+import js.html.DivElement;
+import js.Browser;
 
 class Main extends Application {
 
