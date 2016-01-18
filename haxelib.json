@@ -16,8 +16,8 @@
 	"contributors": [
 		"adireddy"
 	],
-	"releasenote": "bug fix",
-	"version": "1.1.1",
+	"releasenote": "added destroy method",
+	"version": "1.1.2",
 	"url": "https://github.com/adireddy/perf",
 	"dependencies": {}
 }
