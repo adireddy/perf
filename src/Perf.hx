@@ -46,12 +46,14 @@ import js.Browser;
 
 	var _perfObj:Performance;
 	var _memoryObj:Memory;
+	var _raf:Bool;
 
 	public function new(?pos = "TR", ?offset:Float = 0) {
 		_perfObj = Browser.window.performance;
 		_memoryObj = untyped __js__("window.performance").memory;
 		_memCheck = (_perfObj != null && _memoryObj != null && _memoryObj.totalJSHeapSize > 0);
 
+		_raf = true;
 		currentFps = 0;
 		currentMs = 0;
 		currentMem = "0";
@@ -79,7 +81,7 @@ import js.Browser;
 		var time = _now();
 		_ticks++;
 
-		if (time > _prevTime + MEASUREMENT_INTERVAL) {
+		if (_raf && time > _prevTime + MEASUREMENT_INTERVAL) {
 			currentMs = Math.round(time - _startTime);
 			ms.innerHTML = "MS: " + currentMs;
 
@@ -103,7 +105,7 @@ import js.Browser;
 		}
 		_startTime =  time;
 
-		Browser.window.requestAnimationFrame(cast _tick);
+		if (_raf) Browser.window.requestAnimationFrame(cast _raf ? _tick : function() {});
 	}
 
 	function _createDiv(id:String, ?top:Float = 0):DivElement {
@@ -184,6 +186,25 @@ import js.Browser;
 			Browser.document.body.removeChild(info);
 			info = null;
 		}
+	}
+
+	public function destroy() {
+		_raf = false;
+		_perfObj = null;
+		_memoryObj = null;
+		if (fps != null) {
+			Browser.document.body.removeChild(fps);
+			fps = null;
+		}
+		if (ms != null) {
+			Browser.document.body.removeChild(ms);
+			ms = null;
+		}
+		if (memory != null) {
+			Browser.document.body.removeChild(memory);
+			memory = null;
+		}
+		clearInfo();
 	}
 }
 
