@@ -5,6 +5,7 @@ var Perf = $hx_exports.Perf = function(pos,offset) {
 	this._perfObj = window.performance;
 	this._memoryObj = window.performance.memory;
 	this._memCheck = this._perfObj != null && this._memoryObj != null && this._memoryObj.totalJSHeapSize > 0;
+	this._raf = true;
 	this.currentFps = 0;
 	this.currentMs = 0;
 	this.currentMem = "0";
@@ -29,7 +30,7 @@ Perf.prototype = {
 		var time;
 		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) time = this._perfObj.now(); else time = new Date().getTime();
 		this._ticks++;
-		if(time > this._prevTime + Perf.MEASUREMENT_INTERVAL) {
+		if(this._raf && time > this._prevTime + Perf.MEASUREMENT_INTERVAL) {
 			this.currentMs = Math.round(time - this._startTime);
 			this.ms.innerHTML = "MS: " + this.currentMs;
 			this.currentFps = Math.round(this._ticks * 1000 / (time - this._prevTime));
@@ -45,7 +46,8 @@ Perf.prototype = {
 			}
 		}
 		this._startTime = time;
-		window.requestAnimationFrame($bind(this,this._tick));
+		if(this._raf) window.requestAnimationFrame(this._raf?$bind(this,this._tick):function() {
+		});
 	}
 	,_createDiv: function(id,top) {
 		if(top == null) top = 0;
@@ -126,6 +128,24 @@ Perf.prototype = {
 			window.document.body.removeChild(this.info);
 			this.info = null;
 		}
+	}
+	,destroy: function() {
+		this._raf = false;
+		this._perfObj = null;
+		this._memoryObj = null;
+		if(this.fps != null) {
+			window.document.body.removeChild(this.fps);
+			this.fps = null;
+		}
+		if(this.ms != null) {
+			window.document.body.removeChild(this.ms);
+			this.ms = null;
+		}
+		if(this.memory != null) {
+			window.document.body.removeChild(this.memory);
+			this.memory = null;
+		}
+		this.clearInfo();
 	}
 };
 var $_, $fid = 0;
