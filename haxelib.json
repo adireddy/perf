@@ -16,8 +16,8 @@
 	"contributors": [
 		"adireddy"
 	],
-	"releasenote": "added destroy method",
-	"version": "1.1.2",
+	"releasenote": "added support for older browsers",
+	"version": "1.1.5",
 	"url": "https://github.com/adireddy/perf",
 	"dependencies": {}
 }
