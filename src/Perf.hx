@@ -25,6 +25,8 @@ import js.Browser;
 	public static var BOTTOM_LEFT:String = "BL";
 	public static var BOTTOM_RIGHT:String = "BR";
 
+	static var DELAY_TIME:Int = 4000;
+
 	public var fps:DivElement;
 	public var ms:DivElement;
 	public var memory:DivElement;
@@ -46,48 +48,68 @@ import js.Browser;
 
 	var _perfObj:Performance;
 	var _memoryObj:Memory;
-	var _raf:Bool;
+	var _raf:Int;
+
+	var requestAnimationFrame:Dynamic;
+	var cancelAnimationFrame:Dynamic;
 
 	public function new(?pos = "TR", ?offset:Float = 0) {
 		_perfObj = Browser.window.performance;
-		_memoryObj = untyped __js__("window.performance").memory;
+		if (Reflect.field(_perfObj, "memory") != null) _memoryObj = Reflect.field(_perfObj, "memory");
 		_memCheck = (_perfObj != null && _memoryObj != null && _memoryObj.totalJSHeapSize > 0);
-
-		_raf = true;
-		currentFps = 0;
-		currentMs = 0;
-		currentMem = "0";
 
 		_pos = pos;
 		_offset = offset;
-		_time = 0;
-		_ticks = 0;
-		_fpsMin = Math.POSITIVE_INFINITY;
-		_fpsMax = 0;
-		_startTime = _now();
-		_prevTime = -MEASUREMENT_INTERVAL;
 
+		_init();
 		_createFpsDom();
 		_createMsDom();
 		if (_memCheck) _createMemoryDom();
-		Browser.window.requestAnimationFrame(cast _tick);
+
+
+		if (Reflect.field(Browser.window, "requestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "requestAnimationFrame");
+		else if (Reflect.field(Browser.window, "mozRequestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "mozRequestAnimationFrame");
+		else if (Reflect.field(Browser.window, "webkitRequestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "webkitRequestAnimationFrame");
+		else if (Reflect.field(Browser.window, "msRequestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "msRequestAnimationFrame");
+
+		if (Reflect.field(Browser.window, "cancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "cancelAnimationFrame");
+		else if (Reflect.field(Browser.window, "mozCancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "mozCancelAnimationFrame");
+		else if (Reflect.field(Browser.window, "webkitCancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "webkitCancelAnimationFrame");
+		else if (Reflect.field(Browser.window, "msCancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "msCancelAnimationFrame");
+
+		if (requestAnimationFrame != null) _raf = Reflect.callMethod(Browser.window, requestAnimationFrame, [_tick]);
+	}
+
+	inline function _init() {
+		currentFps = 60;
+		currentMs = 0;
+		currentMem = "0";
+
+		_time = 0;
+		_ticks = 0;
+		_fpsMin = 60;
+		_fpsMax = 60;
+		_startTime = _now();
+		_prevTime = -MEASUREMENT_INTERVAL;
 	}
 
 	inline function _now():Float {
 		return (_perfObj != null && _perfObj.now != null) ? _perfObj.now() : Date.now().getTime();
 	}
 
-	function _tick() {
+	function _tick(val:Float) {
 		var time = _now();
 		_ticks++;
 
-		if (_raf && time > _prevTime + MEASUREMENT_INTERVAL) {
+		if (_raf != null && time > _prevTime + MEASUREMENT_INTERVAL) {
 			currentMs = Math.round(time - _startTime);
 			ms.innerHTML = "MS: " + currentMs;
 
 			currentFps = Math.round((_ticks * 1000) / (time - _prevTime));
-			_fpsMin = Math.min(_fpsMin, currentFps);
-			_fpsMax = Math.max(_fpsMax, currentFps);
+			if (currentFps > 0 && val > DELAY_TIME) {
+				_fpsMin = Math.min(_fpsMin, currentFps);
+				_fpsMax = Math.max(_fpsMax, currentFps);
+			}
 
 			fps.innerHTML =  "FPS: " + currentFps + " (" + _fpsMin + "-" + _fpsMax + ")";
 
@@ -105,7 +127,7 @@ import js.Browser;
 		}
 		_startTime =  time;
 
-		if (_raf) Browser.window.requestAnimationFrame(cast _raf ? _tick : function() {});
+		if (_raf != null) _raf = Reflect.callMethod(Browser.window, requestAnimationFrame, [_tick]);
 	}
 
 	function _createDiv(id:String, ?top:Float = 0):DivElement {
@@ -189,7 +211,7 @@ import js.Browser;
 	}
 
 	public function destroy() {
-		_raf = false;
+		_cancelRAF();
 		_perfObj = null;
 		_memoryObj = null;
 		if (fps != null) {
@@ -205,6 +227,12 @@ import js.Browser;
 			memory = null;
 		}
 		clearInfo();
+		_init();
+	}
+
+	inline function _cancelRAF() {
+		Reflect.callMethod(Browser.window, cancelAnimationFrame, [_raf]);
+		_raf = null;
 	}
 }
 

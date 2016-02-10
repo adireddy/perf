@@ -12,6 +12,7 @@ Bunny.__super__ = PIXI.Sprite;
 Bunny.prototype = $extend(PIXI.Sprite.prototype,{
 });
 var pixi_plugins_app_Application = function() {
+	this._animationFrameId = null;
 	this.pixelRatio = 1;
 	this.set_skipFrame(false);
 	this.autoResize = true;
@@ -39,6 +40,7 @@ pixi_plugins_app_Application.prototype = {
 		return this.skipFrame = val;
 	}
 	,_setDefaultValues: function() {
+		this._animationFrameId = null;
 		this.pixelRatio = 1;
 		this.set_skipFrame(false);
 		this.autoResize = true;
@@ -75,18 +77,18 @@ pixi_plugins_app_Application.prototype = {
 		if(rendererType == "auto") this.renderer = PIXI.autoDetectRenderer(this.width,this.height,renderingOptions); else if(rendererType == "canvas") this.renderer = new PIXI.CanvasRenderer(this.width,this.height,renderingOptions); else this.renderer = new PIXI.WebGLRenderer(this.width,this.height,renderingOptions);
 		if(this.roundPixels) this.renderer.roundPixels = true;
 		window.document.body.appendChild(this.renderer.view);
-		if(this.autoResize) window.onresize = $bind(this,this._onWindowResize);
-		window.requestAnimationFrame($bind(this,this._onRequestAnimationFrame));
-		this._addStats();
+		this.resumeRendering();
 	}
 	,pauseRendering: function() {
 		window.onresize = null;
-		window.requestAnimationFrame(function(elapsedTime) {
-		});
+		if(this._animationFrameId != null) {
+			window.cancelAnimationFrame(this._animationFrameId);
+			this._animationFrameId = null;
+		}
 	}
 	,resumeRendering: function() {
 		if(this.autoResize) window.onresize = $bind(this,this._onWindowResize);
-		window.requestAnimationFrame($bind(this,this._onRequestAnimationFrame));
+		if(this._animationFrameId == null) this._animationFrameId = window.requestAnimationFrame($bind(this,this._onRequestAnimationFrame));
 	}
 	,_onWindowResize: function(event) {
 		this.width = window.innerWidth;
@@ -103,29 +105,10 @@ pixi_plugins_app_Application.prototype = {
 			if(this.onUpdate != null) this.onUpdate(elapsedTime);
 			this.renderer.render(this.stage);
 		}
-		window.requestAnimationFrame($bind(this,this._onRequestAnimationFrame));
+		this._animationFrameId = window.requestAnimationFrame($bind(this,this._onRequestAnimationFrame));
 	}
-	,_addStats: function() {
-	}
-	,_addRenderStats: function(top) {
-		if(top == null) top = 0;
-		var ren;
-		var _this = window.document;
-		ren = _this.createElement("div");
-		ren.style.position = "absolute";
-		ren.style.width = "76px";
-		ren.style.top = top + "px";
-		ren.style.right = "0px";
-		ren.style.background = "#CCCCC";
-		ren.style.backgroundColor = "#105CB6";
-		ren.style.fontFamily = "Helvetica,Arial";
-		ren.style.padding = "2px";
-		ren.style.color = "#0FF";
-		ren.style.fontSize = "9px";
-		ren.style.fontWeight = "bold";
-		ren.style.textAlign = "center";
-		window.document.body.appendChild(ren);
-		ren.innerHTML = ["UNKNOWN","WEBGL","CANVAS"][this.renderer.type] + " - " + this.pixelRatio;
+	,addStats: function() {
+		if(window.Perf != null) new Perf().addInfo(["UNKNOWN","WEBGL","CANVAS"][this.renderer.type] + " - " + this.pixelRatio);
 	}
 };
 var Main = function() {
@@ -259,39 +242,53 @@ var Perf = $hx_exports.Perf = function(pos,offset) {
 	if(offset == null) offset = 0;
 	if(pos == null) pos = "TR";
 	this._perfObj = window.performance;
-	this._memoryObj = window.performance.memory;
+	if(Reflect.field(this._perfObj,"memory") != null) this._memoryObj = Reflect.field(this._perfObj,"memory");
 	this._memCheck = this._perfObj != null && this._memoryObj != null && this._memoryObj.totalJSHeapSize > 0;
-	this._raf = true;
-	this.currentFps = 0;
-	this.currentMs = 0;
-	this.currentMem = "0";
 	this._pos = pos;
 	this._offset = offset;
+	this.currentFps = 60;
+	this.currentMs = 0;
+	this.currentMem = "0";
 	this._time = 0;
 	this._ticks = 0;
-	this._fpsMin = Infinity;
-	this._fpsMax = 0;
+	this._fpsMin = 60;
+	this._fpsMax = 60;
 	if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) this._startTime = this._perfObj.now(); else this._startTime = new Date().getTime();
 	this._prevTime = -Perf.MEASUREMENT_INTERVAL;
 	this._createFpsDom();
 	this._createMsDom();
 	if(this._memCheck) this._createMemoryDom();
-	window.requestAnimationFrame($bind(this,this._tick));
+	if(Reflect.field(window,"requestAnimationFrame") != null) this.requestAnimationFrame = Reflect.field(window,"requestAnimationFrame"); else if(Reflect.field(window,"mozRequestAnimationFrame") != null) this.requestAnimationFrame = Reflect.field(window,"mozRequestAnimationFrame"); else if(Reflect.field(window,"webkitRequestAnimationFrame") != null) this.requestAnimationFrame = Reflect.field(window,"webkitRequestAnimationFrame"); else if(Reflect.field(window,"msRequestAnimationFrame") != null) this.requestAnimationFrame = Reflect.field(window,"msRequestAnimationFrame");
+	if(Reflect.field(window,"cancelAnimationFrame") != null) this.cancelAnimationFrame = Reflect.field(window,"cancelAnimationFrame"); else if(Reflect.field(window,"mozCancelAnimationFrame") != null) this.cancelAnimationFrame = Reflect.field(window,"mozCancelAnimationFrame"); else if(Reflect.field(window,"webkitCancelAnimationFrame") != null) this.cancelAnimationFrame = Reflect.field(window,"webkitCancelAnimationFrame"); else if(Reflect.field(window,"msCancelAnimationFrame") != null) this.cancelAnimationFrame = Reflect.field(window,"msCancelAnimationFrame");
+	if(this.requestAnimationFrame != null) this._raf = Reflect.callMethod(window,this.requestAnimationFrame,[$bind(this,this._tick)]);
 };
 Perf.prototype = {
-	_now: function() {
+	_init: function() {
+		this.currentFps = 60;
+		this.currentMs = 0;
+		this.currentMem = "0";
+		this._time = 0;
+		this._ticks = 0;
+		this._fpsMin = 60;
+		this._fpsMax = 60;
+		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) this._startTime = this._perfObj.now(); else this._startTime = new Date().getTime();
+		this._prevTime = -Perf.MEASUREMENT_INTERVAL;
+	}
+	,_now: function() {
 		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) return this._perfObj.now(); else return new Date().getTime();
 	}
-	,_tick: function() {
+	,_tick: function(val) {
 		var time;
 		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) time = this._perfObj.now(); else time = new Date().getTime();
 		this._ticks++;
-		if(this._raf && time > this._prevTime + Perf.MEASUREMENT_INTERVAL) {
+		if(this._raf != null && time > this._prevTime + Perf.MEASUREMENT_INTERVAL) {
 			this.currentMs = Math.round(time - this._startTime);
 			this.ms.innerHTML = "MS: " + this.currentMs;
 			this.currentFps = Math.round(this._ticks * 1000 / (time - this._prevTime));
-			this._fpsMin = Math.min(this._fpsMin,this.currentFps);
-			this._fpsMax = Math.max(this._fpsMax,this.currentFps);
+			if(this.currentFps > 0 && val > Perf.DELAY_TIME) {
+				this._fpsMin = Math.min(this._fpsMin,this.currentFps);
+				this._fpsMax = Math.max(this._fpsMax,this.currentFps);
+			}
 			this.fps.innerHTML = "FPS: " + this.currentFps + " (" + this._fpsMin + "-" + this._fpsMax + ")";
 			if(this.currentFps >= 30) this.fps.style.backgroundColor = Perf.FPS_BG_CLR; else if(this.currentFps >= 15) this.fps.style.backgroundColor = Perf.FPS_WARN_BG_CLR; else this.fps.style.backgroundColor = Perf.FPS_PROB_BG_CLR;
 			this._prevTime = time;
@@ -302,8 +299,7 @@ Perf.prototype = {
 			}
 		}
 		this._startTime = time;
-		if(this._raf) window.requestAnimationFrame(this._raf?$bind(this,this._tick):function() {
-		});
+		if(this._raf != null) this._raf = Reflect.callMethod(window,this.requestAnimationFrame,[$bind(this,this._tick)]);
 	}
 	,_createDiv: function(id,top) {
 		if(top == null) top = 0;
@@ -386,7 +382,8 @@ Perf.prototype = {
 		}
 	}
 	,destroy: function() {
-		this._raf = false;
+		Reflect.callMethod(window,this.cancelAnimationFrame,[this._raf]);
+		this._raf = null;
 		this._perfObj = null;
 		this._memoryObj = null;
 		if(this.fps != null) {
@@ -402,7 +399,31 @@ Perf.prototype = {
 			this.memory = null;
 		}
 		this.clearInfo();
+		this.currentFps = 60;
+		this.currentMs = 0;
+		this.currentMem = "0";
+		this._time = 0;
+		this._ticks = 0;
+		this._fpsMin = 60;
+		this._fpsMax = 60;
+		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) this._startTime = this._perfObj.now(); else this._startTime = new Date().getTime();
+		this._prevTime = -Perf.MEASUREMENT_INTERVAL;
 	}
+	,_cancelRAF: function() {
+		Reflect.callMethod(window,this.cancelAnimationFrame,[this._raf]);
+		this._raf = null;
+	}
+};
+var Reflect = function() { };
+Reflect.field = function(o,field) {
+	try {
+		return o[field];
+	} catch( e ) {
+		return null;
+	}
+};
+Reflect.callMethod = function(o,func,args) {
+	return func.apply(o,args);
 };
 var Std = function() { };
 Std.random = function(x) {
@@ -430,5 +451,8 @@ Perf.TOP_LEFT = "TL";
 Perf.TOP_RIGHT = "TR";
 Perf.BOTTOM_LEFT = "BL";
 Perf.BOTTOM_RIGHT = "BR";
+Perf.DELAY_TIME = 4000;
 Main.main();
 })(typeof console != "undefined" ? console : {log:function(){}}, typeof window != "undefined" ? window : exports);
+
+//# sourceMappingURL=sample.js.map
