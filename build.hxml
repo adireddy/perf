@@ -1,3 +1,8 @@
+-cmd haxelib newrepo
+-cmd haxelib install closure
+
+--next
+
 -cp src
 Perf
 -js dist/perf.js
@@ -8,15 +13,19 @@ Perf
 --next
 -cp src
 Perf
+-lib closure
+-D closure_overwrite
 -js dist/perf.min.js
 -dce std
 --no-traces
 
 --next
--cmd haxelib newrepo
+-cmd haxelib install pixijs
 
 -cp sample
 -cp src
 -main Main
 -lib pixijs
 -js sample/sample.js
+-debug
+-D source-map-content
