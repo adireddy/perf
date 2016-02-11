@@ -32,6 +32,8 @@ import js.Browser;
 	public var memory:DivElement;
 	public var info:DivElement;
 
+	public var lowFps:Float;
+	public var avgFps:Float;
 	public var currentFps:Float;
 	public var currentMs:Float;
 	public var currentMem:String;
@@ -45,6 +47,8 @@ import js.Browser;
 	var _memCheck:Bool;
 	var _pos:String;
 	var _offset:Float;
+	var _measureCount:Int;
+	var _totalFps:Float;
 
 	var _perfObj:Performance;
 	var _memoryObj:Memory;
@@ -85,6 +89,11 @@ import js.Browser;
 		currentMs = 0;
 		currentMem = "0";
 
+		lowFps = 60;
+		avgFps = 60;
+
+		_measureCount = 0;
+		_totalFps = 0;
 		_time = 0;
 		_ticks = 0;
 		_fpsMin = 60;
@@ -107,8 +116,11 @@ import js.Browser;
 
 			currentFps = Math.round((_ticks * 1000) / (time - _prevTime));
 			if (currentFps > 0 && val > DELAY_TIME) {
-				_fpsMin = Math.min(_fpsMin, currentFps);
+				_measureCount++;
+				_totalFps += currentFps;
+				lowFps = _fpsMin = Math.min(_fpsMin, currentFps);
 				_fpsMax = Math.max(_fpsMax, currentFps);
+				avgFps = Math.round(_totalFps / _measureCount);
 			}
 
 			fps.innerHTML =  "FPS: " + currentFps + " (" + _fpsMin + "-" + _fpsMax + ")";

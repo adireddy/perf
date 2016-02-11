@@ -10,6 +10,10 @@ var Perf = $hx_exports.Perf = function(pos,offset) {
 	this.currentFps = 60;
 	this.currentMs = 0;
 	this.currentMem = "0";
+	this.lowFps = 60;
+	this.avgFps = 60;
+	this._measureCount = 0;
+	this._totalFps = 0;
 	this._time = 0;
 	this._ticks = 0;
 	this._fpsMin = 60;
@@ -28,6 +32,10 @@ Perf.prototype = {
 		this.currentFps = 60;
 		this.currentMs = 0;
 		this.currentMem = "0";
+		this.lowFps = 60;
+		this.avgFps = 60;
+		this._measureCount = 0;
+		this._totalFps = 0;
 		this._time = 0;
 		this._ticks = 0;
 		this._fpsMin = 60;
@@ -47,8 +55,11 @@ Perf.prototype = {
 			this.ms.innerHTML = "MS: " + this.currentMs;
 			this.currentFps = Math.round(this._ticks * 1000 / (time - this._prevTime));
 			if(this.currentFps > 0 && val > Perf.DELAY_TIME) {
-				this._fpsMin = Math.min(this._fpsMin,this.currentFps);
+				this._measureCount++;
+				this._totalFps += this.currentFps;
+				this.lowFps = this._fpsMin = Math.min(this._fpsMin,this.currentFps);
 				this._fpsMax = Math.max(this._fpsMax,this.currentFps);
+				this.avgFps = Math.round(this._totalFps / this._measureCount);
 			}
 			this.fps.innerHTML = "FPS: " + this.currentFps + " (" + this._fpsMin + "-" + this._fpsMax + ")";
 			if(this.currentFps >= 30) this.fps.style.backgroundColor = Perf.FPS_BG_CLR; else if(this.currentFps >= 15) this.fps.style.backgroundColor = Perf.FPS_WARN_BG_CLR; else this.fps.style.backgroundColor = Perf.FPS_PROB_BG_CLR;
@@ -163,6 +174,10 @@ Perf.prototype = {
 		this.currentFps = 60;
 		this.currentMs = 0;
 		this.currentMem = "0";
+		this.lowFps = 60;
+		this.avgFps = 60;
+		this._measureCount = 0;
+		this._totalFps = 0;
 		this._time = 0;
 		this._ticks = 0;
 		this._fpsMin = 60;
