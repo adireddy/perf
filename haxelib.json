@@ -16,8 +16,8 @@
 	"contributors": [
 		"adireddy"
 	],
-	"releasenote": "added support for older browsers",
-	"version": "1.1.5",
+	"releasenote": "added lowFps and avgFps properties",
+	"version": "1.1.6",
 	"url": "https://github.com/adireddy/perf",
 	"dependencies": {}
 }
