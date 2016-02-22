@@ -9,19 +9,6 @@ module.exports = function (grunt) {
 			}
 		},
 
-		uglify: {
-			options: {
-				compress: {
-					drop_console: true
-				}
-			},
-			target: {
-				files: {
-					"dist/perf.min.js": ["dist/perf.min.js"]
-				}
-			}
-		},
-
 		exec: {
             copy: "mkdir npm-publish || true && cp -r src dist assets package.json LICENSE README.md ./npm-publish/",
 			npm: "npm publish ./npm-publish/ && rm -r npm-publish"
@@ -33,8 +20,7 @@ module.exports = function (grunt) {
 	});
 
 	grunt.loadNpmTasks("grunt-haxe");
-	grunt.loadNpmTasks("grunt-contrib-uglify");
 	grunt.loadNpmTasks("grunt-zip");
 	grunt.loadNpmTasks("grunt-exec");
-	grunt.registerTask("default", ["haxe", "uglify", "exec"]);
+	grunt.registerTask("default", ["haxe", "exec"]);
 };
