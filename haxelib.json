@@ -16,8 +16,8 @@
 	"contributors": [
 		"adireddy"
 	],
-	"releasenote": "added lowFps and avgFps properties",
-	"version": "1.1.6",
+	"releasenote": "iOS 6 chrome bug fix",
+	"version": "1.1.8",
 	"url": "https://github.com/adireddy/perf",
 	"dependencies": {}
 }
