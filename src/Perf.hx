@@ -54,8 +54,8 @@ import js.Browser;
 	var _memoryObj:Memory;
 	var _raf:Int;
 
-	var requestAnimationFrame:Dynamic;
-	var cancelAnimationFrame:Dynamic;
+	var RAF:Dynamic;
+	var CAF:Dynamic;
 
 	public function new(?pos = "TR", ?offset:Float = 0) {
 		_perfObj = Browser.window.performance;
@@ -70,18 +70,17 @@ import js.Browser;
 		_createMsDom();
 		if (_memCheck) _createMemoryDom();
 
+		if (Browser.window.requestAnimationFrame != null) RAF = Browser.window.requestAnimationFrame;
+		else if (untyped __js__("window").mozRequestAnimationFrame != null) RAF = untyped __js__("window").mozRequestAnimationFrame;
+		else if (untyped __js__("window").webkitRequestAnimationFrame != null) RAF = untyped __js__("window").webkitRequestAnimationFrame;
+		else if (untyped __js__("window").msRequestAnimationFrame != null) RAF = untyped __js__("window").msRequestAnimationFrame;
 
-		if (Reflect.field(Browser.window, "requestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "requestAnimationFrame");
-		else if (Reflect.field(Browser.window, "mozRequestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "mozRequestAnimationFrame");
-		else if (Reflect.field(Browser.window, "webkitRequestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "webkitRequestAnimationFrame");
-		else if (Reflect.field(Browser.window, "msRequestAnimationFrame") != null) requestAnimationFrame = Reflect.field(Browser.window, "msRequestAnimationFrame");
+		if (Browser.window.cancelAnimationFrame != null) CAF = Browser.window.cancelAnimationFrame;
+		else if (untyped __js__("window").mozCancelAnimationFrame != null) CAF = untyped __js__("window").mozCancelAnimationFrame;
+		else if (untyped __js__("window").webkitCancelAnimationFrame != null) CAF = untyped __js__("window").webkitCancelAnimationFrame;
+		else if (untyped __js__("window").msCancelAnimationFrame != null) CAF = untyped __js__("window").msCancelAnimationFrame;
 
-		if (Reflect.field(Browser.window, "cancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "cancelAnimationFrame");
-		else if (Reflect.field(Browser.window, "mozCancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "mozCancelAnimationFrame");
-		else if (Reflect.field(Browser.window, "webkitCancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "webkitCancelAnimationFrame");
-		else if (Reflect.field(Browser.window, "msCancelAnimationFrame") != null) cancelAnimationFrame = Reflect.field(Browser.window, "msCancelAnimationFrame");
-
-		if (requestAnimationFrame != null) _raf = Reflect.callMethod(Browser.window, requestAnimationFrame, [_tick]);
+		if (RAF != null) _raf = Reflect.callMethod(Browser.window, RAF, [_tick]);
 	}
 
 	inline function _init() {
@@ -139,7 +138,7 @@ import js.Browser;
 		}
 		_startTime =  time;
 
-		if (_raf != null) _raf = Reflect.callMethod(Browser.window, requestAnimationFrame, [_tick]);
+		if (_raf != null) _raf = Reflect.callMethod(Browser.window, RAF, [_tick]);
 	}
 
 	function _createDiv(id:String, ?top:Float = 0):DivElement {
@@ -243,7 +242,7 @@ import js.Browser;
 	}
 
 	inline function _cancelRAF() {
-		Reflect.callMethod(Browser.window, cancelAnimationFrame, [_raf]);
+		Reflect.callMethod(Browser.window, CAF, [_raf]);
 		_raf = null;
 	}
 }
