@@ -5,7 +5,7 @@ engines:
     enabled: true
 
 exclude_paths:
-  - test/**/*
+  - assets/**/*
   - sample/**/*
   - dist/**/*
 
