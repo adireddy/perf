@@ -2,6 +2,8 @@
 var Perf = $hx_exports.Perf = function(pos,offset) {
 	if(offset == null) offset = 0;
 	if(pos == null) pos = "TR";
+	var _g = this;
+	this._divElements = [];
 	this._perfObj = window.performance;
 	if(Reflect.field(this._perfObj,"memory") != null) this._memoryObj = Reflect.field(this._perfObj,"memory");
 	this._memCheck = this._perfObj != null && this._memoryObj != null && this._memoryObj.totalJSHeapSize > 0;
@@ -23,8 +25,24 @@ var Perf = $hx_exports.Perf = function(pos,offset) {
 	this._createFpsDom();
 	this._createMsDom();
 	if(this._memCheck) this._createMemoryDom();
-	if(($_=window,$bind($_,$_.requestAnimationFrame)) != null) this.RAF = ($_=window,$bind($_,$_.requestAnimationFrame)); else if(window.mozRequestAnimationFrame != null) this.RAF = window.mozRequestAnimationFrame; else if(window.webkitRequestAnimationFrame != null) this.RAF = window.webkitRequestAnimationFrame; else if(window.msRequestAnimationFrame != null) this.RAF = window.msRequestAnimationFrame;
-	if(($_=window,$bind($_,$_.cancelAnimationFrame)) != null) this.CAF = ($_=window,$bind($_,$_.cancelAnimationFrame)); else if(window.mozCancelAnimationFrame != null) this.CAF = window.mozCancelAnimationFrame; else if(window.webkitCancelAnimationFrame != null) this.CAF = window.webkitCancelAnimationFrame; else if(window.msCancelAnimationFrame != null) this.CAF = window.msCancelAnimationFrame;
+	var lastTime = 0;
+	var id = null;
+	if(($_=window,$bind($_,$_.requestAnimationFrame)) != null) this.RAF = ($_=window,$bind($_,$_.requestAnimationFrame)); else this.RAF = function(callback) {
+		var currTime;
+		if(_g._perfObj != null && ($_=_g._perfObj,$bind($_,$_.now)) != null) currTime = _g._perfObj.now(); else currTime = new Date().getTime();
+		var timeToCall = Std["int"](Math.max(0,16 - (currTime - lastTime)));
+		id = haxe_Timer.delay(function() {
+			callback(currTime + timeToCall);
+		},timeToCall);
+		lastTime = currTime + timeToCall;
+		return id;
+	};
+	if(($_=window,$bind($_,$_.cancelAnimationFrame)) != null) this.CAF = ($_=window,$bind($_,$_.cancelAnimationFrame)); else this.CAF = function(id1) {
+		if(id1 != null) {
+			id1.stop();
+			id1 = null;
+		}
+	};
 	if(this.RAF != null) this._raf = Reflect.callMethod(window,this.RAF,[$bind(this,this._tick)]);
 };
 Perf.prototype = {
@@ -54,6 +72,7 @@ Perf.prototype = {
 			this.currentMs = Math.round(time - this._startTime);
 			this.ms.innerHTML = "MS: " + this.currentMs;
 			this.currentFps = Math.round(this._ticks * 1000 / (time - this._prevTime));
+			if(this.currentFps > 60) this.currentFps = 60;
 			if(this.currentFps > 0 && val > Perf.DELAY_TIME) {
 				this._measureCount++;
 				this._totalFps += this.currentFps;
@@ -109,6 +128,7 @@ Perf.prototype = {
 		div.style.fontWeight = "bold";
 		div.style.textAlign = "center";
 		window.document.body.appendChild(div);
+		this._divElements.push(div);
 		return div;
 	}
 	,_createFpsDom: function() {
@@ -185,6 +205,24 @@ Perf.prototype = {
 		if(this._perfObj != null && ($_=this._perfObj,$bind($_,$_.now)) != null) this._startTime = this._perfObj.now(); else this._startTime = new Date().getTime();
 		this._prevTime = -Perf.MEASUREMENT_INTERVAL;
 	}
+	,hide: function() {
+		var _g = 0;
+		var _g1 = this._divElements;
+		while(_g < _g1.length) {
+			var div = _g1[_g];
+			++_g;
+			div.style.visibility = "hidden";
+		}
+	}
+	,show: function() {
+		var _g = 0;
+		var _g1 = this._divElements;
+		while(_g < _g1.length) {
+			var div = _g1[_g];
+			++_g;
+			div.style.visibility = "visible";
+		}
+	}
 	,_cancelRAF: function() {
 		Reflect.callMethod(window,this.CAF,[this._raf]);
 		this._raf = null;
@@ -200,6 +238,33 @@ Reflect.field = function(o,field) {
 };
 Reflect.callMethod = function(o,func,args) {
 	return func.apply(o,args);
+};
+var Std = function() { };
+Std["int"] = function(x) {
+	return x | 0;
+};
+var haxe_Timer = function(time_ms) {
+	var me = this;
+	this.id = setInterval(function() {
+		me.run();
+	},time_ms);
+};
+haxe_Timer.delay = function(f,time_ms) {
+	var t = new haxe_Timer(time_ms);
+	t.run = function() {
+		t.stop();
+		f();
+	};
+	return t;
+};
+haxe_Timer.prototype = {
+	stop: function() {
+		if(this.id == null) return;
+		clearInterval(this.id);
+		this.id = null;
+	}
+	,run: function() {
+	}
 };
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
