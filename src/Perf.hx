@@ -261,11 +261,11 @@ import js.Browser;
 		_init();
 	}
 
-	function hide() {
+	public function hide() {
 		for (div in _divElements) div.style.visibility = "hidden";
 	}
 
-	function show() {
+	public function show() {
 		for (div in _divElements) div.style.visibility = "visible";
 	}
 
