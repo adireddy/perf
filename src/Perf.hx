@@ -26,6 +26,8 @@ import js.Browser;
 	public static var BOTTOM_LEFT:String = "BL";
 	public static var BOTTOM_RIGHT:String = "BR";
 
+	static var POS_SUFFIX:String = "px";
+
 	static var DELAY_TIME:Int = 4000;
 
 	public var fps:DivElement;
@@ -168,17 +170,17 @@ import js.Browser;
 
 		switch (_pos) {
 			case "TL":
-				div.style.left = _offset + "px";
-				div.style.top = top + "px";
+				div.style.left = _offset + POS_SUFFIX;
+				div.style.top = top + POS_SUFFIX;
 			case "TR":
-				div.style.right = _offset + "px";
-				div.style.top = top + "px";
+				div.style.right = _offset + POS_SUFFIX;
+				div.style.top = top + POS_SUFFIX;
 			case "BL":
-				div.style.left = _offset + "px";
-				div.style.bottom = ((_memCheck) ? 48 : 32) - top + "px";
+				div.style.left = _offset + POS_SUFFIX;
+				div.style.bottom = ((_memCheck) ? 48 : 32) - top + POS_SUFFIX;
 			case "BR":
-				div.style.right = _offset + "px";
-				div.style.bottom = ((_memCheck) ? 48 : 32) - top + "px";
+				div.style.right = _offset + POS_SUFFIX;
+				div.style.bottom = ((_memCheck) ? 48 : 32) - top + POS_SUFFIX;
 		}
 
 		div.style.width = "80px";
