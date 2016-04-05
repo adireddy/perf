@@ -1,4 +1,8 @@
 # perf.js
+
+[![Code Climate](https://codeclimate.com/github/adireddy/perf/badges/gpa.svg)](https://codeclimate.com/github/adireddy/perf)
+[![Code Climate Issues](https://img.shields.io/codeclimate/issues/github/adireddy/perf.svg)](https://codeclimate.com/github/adireddy/perf/issues)
+
 Simple JavaScript library to monitor frame rate (**FPS**), frame time (**MS**) and memory (**MEM**).
 
 Uses `performance.now()` with `Date.now()` fallback on older browsers.
