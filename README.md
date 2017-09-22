@@ -2,6 +2,7 @@
 
 [![Code Climate](https://codeclimate.com/github/adireddy/perf/badges/gpa.svg)](https://codeclimate.com/github/adireddy/perf)
 [![Code Climate Issues](https://img.shields.io/codeclimate/issues/github/adireddy/perf.svg)](https://codeclimate.com/github/adireddy/perf/issues)
+[![Support Perf on Patreon](http://www.waudjs.com/images/patreon_btn.png)](https://www.patreon.com/adireddy)
 
 Simple JavaScript library to monitor frame rate (**FPS**), frame time (**MS**) and memory (**MEM**).
 
