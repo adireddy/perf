@@ -89,7 +89,9 @@ Offset is optional and is 0 by default.
 #### Bookmarklet:
 
 ```js
-javascript:(function(){var script=document.createElement('script');script.src='//cdn.rawgit.com/adireddy/perf/b516938d/dist/perf.min.js';document.head.appendChild(script);script.onload=function(){window.perf = new Perf();}}())
+javascript:(function(){
+  var script = document.createElement('script');script.src='//cdn.rawgit.com/adireddy/perf/b516938d/dist/perf.min.js';document.head.appendChild(script);script.onload=function(){window.perf = new Perf();}
+  }())
 ```
 
 #### Licensing Information
